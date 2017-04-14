@@ -7,7 +7,7 @@ main :: IO ()
 main = do
     putStrLn "====== Jogo da Velha ======"
 
-    -- |Grab the user's move, and feed that to tic-tac-toe. Recurse as needed.
+    jogador1 tabuleiroVazio
 
 -- Funçao para auxiliar que o prompt vai ser feito antes do usuario dar um input
 promptLine :: String -> IO String
@@ -20,7 +20,7 @@ promptLine text = do
 fimDeJogo :: Tabuleiro -> IO ()
 fimDeJogo t = do
 	putStrLn (show t)
-	putStrLn (winner t)
+	putStrLn (ganhador t)
 
 jogador1 :: Tabuleiro -> IO ()
 jogador1 tabuleiro = do
@@ -28,7 +28,7 @@ jogador1 tabuleiro = do
 	posicao <- promptLine "Turno do jogador 1: \nEscolha um bloco para jogar "
 	putStrLn ""
 	let selecPosicao = Left (read posicao) -- Pega o input do jogador e adiciona X nela
-	let novoTab = findAndReplace tabuleiro selecPosicao (Right X)
+	let novoTab = atualizaTab tabuleiro selecPosicao (Right X)
 	if ganhou novoTab || empate novoTab
 		then fimDeJogo novoTab
 		else jogador2 novoTab
@@ -38,8 +38,8 @@ jogador2 tabuleiro = do
 	putStrLn (show tabuleiro)
 	posicao <- promptLine "Turno do jogador 2: \nEscolha um bloco para jogar "
 	putStrLn ""
-	let selecPosicao = Right (read loc) -- Pega o input do jogador e adiciona O nela
-	let novoBoard = findAndReplace tabuleiro selecPosicao (Left O)
+	let selecPos = Left (read posicao) -- Pega o input do jogador e adiciona O nela
+	let novoTab = atualizaTab tabuleiro selecPos (Right O)
 	if ganhou novoTab || empate novoTab
 		then fimDeJogo novoTab
 		else jogador1 novoTab
