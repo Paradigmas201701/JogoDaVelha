@@ -90,4 +90,4 @@ ganhador :: Tabuleiro -> String
 ganhador t = if length simboloJog > 0 then head simboloJog else "Empatou!"
 	where
 		trioConfig = ((linhas t) ++ (colunas t) ++ (diagonais t))
-		simboloJog = [if a == (Right O) then "Jogador um Ganhou!" else "Jogador dois Ganhou!" | ts@[a,b,c] <- trioConfig, trioCheio ts]
+		simboloJog = [if a == (Right O) then "Jogador dois Ganhou!" else "Jogador um Ganhou!" | ts@[a,b,c] <- trioConfig, trioCheio ts]
