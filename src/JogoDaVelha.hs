@@ -59,9 +59,21 @@ trioCheio ts@[a,b,c] = semO && blocosIguais -- ts = [a,b,c]
 		semO = foldl (\simboloAtual simb -> simboloAtual && (isRight simb)) True ts
 		blocosIguais = a == b && b == c
 
+trioQsCheio :: Trio -> Bool
+trioQsCheio ts@[a,b,c] = semO && blocosIguais -- ts = [a,b,c]
+        where
+                -- foldl soma todos os elementos da lista
+                -- \_ = operador lambda. Ele pode virar qualquer variável ou atributo
+                -- Verifica se todos os elementos do trio sao X, se forem retorna True, se não, retorna False
+                semO = foldl (\simboloAtual simb -> simboloAtual && (isRight simb)) True ts
+                blocosIguais = a == b && b == c
+
+
+-- foldl (*) 1 [1..5]
 -- Verifica se houve vencedor
 ganhou :: Tabuleiro -> Bool
-ganhou t = foldl (\trioAtual trio -> trioAtual || (trioCheio trio)) False ((linhas t) ++ (colunas t) ++ (diagonais t))
+--               |                   BOOL                         | False |                   8x                     | 
+ganhou t = foldl (\trioAtual trio -> trioAtual || (trioCheio trio)) False ((linhas t) ++ (colunas t) ++ (diagonais t)) 
 
 -- Transforma o tabuleiro em uma Lista para que ele possa ser usado pela função isLeft
 tabuleiroLista :: Tabuleiro -> [Bloco]
@@ -81,9 +93,9 @@ listaTabuleiro :: [Bloco] -> Tabuleiro
 listaTabuleiro [a,b,c,d,e,f,g,h,i] = Tabuleiro [a,b,c] [d,e,f] [g,h,i]
 
 -- Atualiza o tabuleiro com o simbolo jogado
-atualizaTab :: Tabuleiro -> Bloco -> Bloco -> Tabuleiro
-atualizaTab t b1 b2 = listaTabuleiro [if x==b1 then b2 else x | x <- tl]
-	where tl = tabuleiroLista t
+atualizaTab :: Tabuleiro -> Bloco -> Bloco -> Tabuleiro 
+atualizaTab t posicao valor = listaTabuleiro [if x==posicao then valor else x | x <- tl]
+	where tl = tabuleiroLista t -- [[Left 1 ], [Left 2 ], [Left 3 ], [Right X ], [Left 5 ], [Right O ], [Left 7 ], [Left 8 ], [Right X ]]
 
 -- Mostra o jogador que ganhou na tela
 ganhador :: Tabuleiro -> String
@@ -91,3 +103,31 @@ ganhador t = if length simboloJog > 0 then head simboloJog else "Empatou!"
 	where
 		trioConfig = ((linhas t) ++ (colunas t) ++ (diagonais t))
 		simboloJog = [if a == (Right O) then "Jogador dois Ganhou!" else "Jogador um Ganhou!" | ts@[a,b,c] <- trioConfig, trioCheio ts]
+
+
+umParaGanhar :: Tabuleiro -> Int
+umParaGanhar t =
+        if mandaTrio linhas t > 0 
+                then  mandaTrio linhas t
+                else if mandaTrio colunas t > 0
+                        then mandaTrio colunas t
+                        else if mandaTrio diagonais t > 0
+                                then mandaTrio diagonais t
+
+
+mandaTrio :: [Trio] -> Int
+mandaTrio [] = 0
+mandaTrio (x:xs) = do
+        if verificaTrio [x] /= 0
+                then mandaTrio t = verificaTrio [x]
+                else mandaTrio [xs] 
+
+
+verificaTrio :: Trio -> Int
+verificaTrio [a, b, c]
+        | a == b == (Right O) && c /= (Right X) = c
+        | a == c == (Right O) && b /= (Right X) = b
+        | b == c == (Right O) && a /= (Right X) = a
+        | otherwise = 0
+
+
